@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0d1f4d">
+<link rel="icon" href="/icon-192.png?v=3" type="image/png">
+<title>Painel do Dono — Snail Royale</title>
+<style>
+:root{--bg:#0d1f4d;--bg2:#16337a;--card:#1b3a8c;--line:#2f56b8;--fg:#eef3ff;--mut:#a9bce8;--gold:#ffd54a;--ok:#5dffa0;--bad:#ff7b72;--btn:#3b64c9}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--fg);font:15px/1.45 system-ui,Segoe UI,Roboto,sans-serif}
+body{padding:calc(env(safe-area-inset-top,0px) + 12px) max(14px,env(safe-area-inset-right,0px)) 40px max(14px,env(safe-area-inset-left,0px))}
+main{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+h1{margin:0;font-size:22px;color:var(--gold)}
+h2{margin:0;font-size:17px}
+p{margin:0}
+.mut{color:var(--mut);font-size:13px}
+button,input,textarea{font:inherit;color:var(--fg)}
+button{border:0;border-radius:10px;background:var(--btn);padding:9px 14px;font-weight:700;cursor:pointer;min-height:40px}
+button:active{transform:scale(.97)}
+button.gold{background:linear-gradient(#ffc933,#f08c00);color:#4a2c00}
+button.bad{background:#b3382f}
+button.ghost{background:transparent;border:1px solid var(--line)}
+button:disabled{opacity:.45;cursor:default}
+input,textarea{width:100%;background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:10px}
+input:focus,textarea:focus,button:focus-visible{outline:3px solid var(--gold);outline-offset:1px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:20px;padding:5px 12px;font-size:13px;font-weight:700;background:#0006}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--mut)}
+.pill.on .dot{background:var(--ok)}.pill.err .dot{background:var(--bad)}
+.tabs{display:flex;gap:6px;overflow-x:auto}
+.tabs button{background:var(--bg2);white-space:nowrap}
+.tabs button.on{background:var(--btn);outline:2px solid var(--gold)}
+.box{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
+.stats div{background:#0005;border-radius:10px;padding:10px}.stats b{display:block;font-size:22px;color:var(--gold)}
+.pl{background:var(--card);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;border:1px solid transparent}
+.pl.off{opacity:.75}.pl.banned{border-color:var(--bad)}
+.pl .h{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;flex-wrap:wrap}
+.pl .n{font-weight:800;font-size:16px;overflow-wrap:anywhere}
+.pl .m{font-size:12.5px;color:var(--mut);overflow-wrap:anywhere}
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+.acts button{min-height:36px;padding:6px 11px;font-size:13px}
+.row{display:grid;grid-template-columns:1fr 70px;gap:10px;align-items:center}
+.row label{display:flex;flex-direction:column;gap:4px}
+input[type=range]{padding:0;border:0;accent-color:var(--gold)}
+.val{text-align:right;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{background:#0006;border-radius:20px;padding:4px 6px 4px 12px;display:flex;gap:6px;align-items:center}
+.chip button{min-height:26px;padding:0 8px;background:#b3382f;border-radius:20px}
+.empty{text-align:center;padding:26px 10px;color:var(--mut)}
+#gate{max-width:380px;margin:12vh auto 0}
+.pw{position:relative}.pw input{padding-right:52px}
+.eye{position:absolute;right:4px;top:50%;margin-top:-18px;min-height:36px;height:36px;width:44px;padding:0;background:transparent;font-size:20px;line-height:1;touch-action:manipulation}
+.eye:active{transform:none}
+.eye[aria-pressed="true"]{background:#0006}
+.err{color:var(--bad);min-height:18px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+
+<!-- Tela de senha (a senha fica só neste navegador) -->
+<main id="gate" hidden>
+  <h1>👑 Painel do Dono</h1>
+  <div class="box">
+    <p id="gateTxt" class="mut"></p>
+    <div class="pw"><input id="gpass" type="password" placeholder="Senha" autocomplete="current-password"><button type="button" class="eye" data-for="gpass" aria-label="Mostrar senha" aria-pressed="false">👁️</button></div>
+    <div class="pw" id="pw2" hidden><input id="gpass2" type="password" placeholder="Repita a senha" autocomplete="new-password"><button type="button" class="eye" data-for="gpass2" aria-label="Mostrar senha" aria-pressed="false">👁️</button></div>
+    <button id="gok" class="gold">Entrar</button>
+    <p id="gerr" class="err"></p>
+  </div>
+</main>
+
+<main id="app" hidden>
+  <div class="top">
+    <h1>👑 Painel do Dono <span class="mut" style="font-weight:600">Snail Royale</span></h1>
+    <span id="status" class="pill"><i class="dot"></i><span id="statusTxt">Conectando…</span></span>
+  </div>
+
+  <div class="tabs" id="tabs">
+    <button data-t="pl" class="on">👥 Jogadores</button>
+    <button data-t="cfg">⚙️ Ajustes</button>
+    <button data-t="ann">📢 Avisos</button>
+    <button data-t="nm">🚫 Nomes</button>
+  </div>
+
+  <!-- JOGADORES -->
+  <section id="t-pl" class="box">
+    <div class="stats">
+      <div><b id="sOn">0</b><span class="mut">online agora</span></div>
+      <div><b id="sAll">0</b><span class="mut">já vistos</span></div>
+      <div><b id="sBan">0</b><span class="mut">banidos</span></div>
+    </div>
+    <input id="search" placeholder="Buscar por nome…">
+    <div id="plist" style="display:flex;flex-direction:column;gap:10px"></div>
+    <p class="mut">Você só vê jogadores enquanto este painel está aberto e eles estão com o jogo aberto. Os jogadores aparecem sozinhos, a cada minuto ou quando entram no menu.</p>
+  </section>
+
+  <!-- AJUSTES -->
+  <section id="t-cfg" class="box" hidden>
+    <h2>Ajustes da batalha</h2>
+    <p class="mut">Valem para todos os jogadores. Quem estiver online recebe na hora; os outros recebem na próxima vez que abrirem o jogo com este painel aberto.</p>
+    <div class="row"><label>Vida das torres (x)<input id="c-towerHp" type="range" min="0.1" max="10" step="0.1"></label><span class="val" id="v-towerHp"></span></div>
+    <div class="row"><label>Dano das cartas (x)<input id="c-dmg" type="range" min="0.1" max="10" step="0.1"></label><span class="val" id="v-dmg"></span></div>
+    <div class="row"><label>Velocidade da energia (x)<input id="c-energy" type="range" min="0.2" max="5" step="0.1"></label><span class="val" id="v-energy"></span></div>
+    <div class="row"><label>Duração da partida (segundos)<input id="c-time" type="range" min="30" max="900" step="10"></label><span class="val" id="v-time"></span></div>
+    <div class="acts"><button class="gold" id="cfgSend">Enviar a todos</button><button class="ghost" id="cfgReset">Voltar ao padrão</button></div>
+  </section>
+
+  <!-- AVISOS -->
+  <section id="t-ann" class="box" hidden>
+    <h2>Aviso para todos</h2>
+    <textarea id="annTxt" rows="3" maxlength="300" placeholder="Ex.: Novo Passe Royale disponível!"></textarea>
+    <div class="acts"><button class="gold" id="annSend">Enviar aviso</button><button class="ghost" id="annClear">Apagar aviso salvo</button></div>
+    <p class="mut" id="annCur"></p>
+    <p class="mut">O aviso aparece uma vez para cada aparelho. Quem estiver offline vê quando abrir o jogo.</p>
+  </section>
+
+  <!-- NOMES BLOQUEADOS -->
+  <section id="t-nm" class="box" hidden>
+    <h2>Nomes bloqueados</h2>
+    <p class="mut">Ninguém consegue criar conta com estes nomes.</p>
+    <div class="acts" style="flex-wrap:nowrap"><input id="nmIn" maxlength="16" placeholder="Nome para bloquear"><button id="nmAdd" class="gold">Adicionar</button></div>
+    <div class="chips" id="nmList"></div>
+  </section>
+
+  <div class="acts"><button class="ghost" id="btnLock">🔒 Trancar painel</button></div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script>
+// Mesmo ID que o jogo usa para falar com o painel (index.html → PANEL_ID). Se mudar um, mude o outro.
+const PANEL_ID = 'snailroyale-dono-k7x2q9';
+const PEER_OPTS = { debug: 0, config: { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun:stun1.l.google.com:19302' }, { urls: 'stun:global.stun.twilio.com:3478' }] } };
+const DEF = { towerHp: 1, dmg: 1, energy: 1, time: 180 };
+const KEY = 'sr_dono_v1', KEYP = 'sr_dono_pass';
+const $ = id => document.getElementById(id);
+
+// ---------- armazenamento (localStorage com reserva em memória) ----------
+const mem = {};
+const LS = {
+  get(k) { try { return localStorage.getItem(k); } catch (e) { return k in mem ? mem[k] : null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch (e) { mem[k] = String(v); } }
+};
+let S = { cfg: { ...DEF }, blocked: [], banned: {}, players: {}, msgs: {}, ann: null, del: {} };
+try { const o = JSON.parse(LS.get(KEY) || 'null'); if (o) S = Object.assign(S, o); } catch (e) {}
+S.cfg = Object.assign({}, DEF, S.cfg);
+const save = () => LS.set(KEY, JSON.stringify(S));
+
+// ---------- senha ----------
+async function sha(s) {
+  if (window.crypto && crypto.subtle) {
+    const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('sr-dono:' + s));
+    return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('');
+  }
+  let h = 5381; for (const c of s) h = ((h << 5) + h + c.charCodeAt(0)) >>> 0; return 'weak' + h;
+}
+function showGate() {
+  const first = !LS.get(KEYP);
+  $('app').hidden = true; $('gate').hidden = false;
+  $('gateTxt').textContent = first ? 'Primeiro acesso: crie uma senha para este painel. Ela fica salva só neste navegador.' : 'Digite a senha do painel.';
+  $('pw2').hidden = !first; hidePw(); $('gok').textContent = first ? 'Criar senha e entrar' : 'Entrar'; $('gpass').value = ''; $('gpass2').value = ''; $('gerr').textContent = '';
+}
+function hidePw() { document.querySelectorAll('.eye').forEach(b => { $(b.dataset.for).type = 'password'; b.textContent = '👁️'; b.setAttribute('aria-pressed', 'false'); b.setAttribute('aria-label', 'Mostrar senha'); }); }
+document.querySelectorAll('.eye').forEach(b => b.onclick = () => {
+  const i = $(b.dataset.for), show = i.type === 'password';
+  i.type = show ? 'text' : 'password'; b.textContent = show ? '🙈' : '👁️';
+  b.setAttribute('aria-pressed', String(show)); b.setAttribute('aria-label', show ? 'Esconder senha' : 'Mostrar senha'); i.focus();
+});
+$('gok').onclick = async () => {
+  const p = $('gpass').value, first = !LS.get(KEYP);
+  if (first) {
+    if (p.length < 4) return $('gerr').textContent = 'Use pelo menos 4 caracteres.';
+    if (p !== $('gpass2').value) return $('gerr').textContent = 'As senhas não são iguais.';
+    LS.set(KEYP, await sha(p));
+  } else if ((await sha(p)) !== LS.get(KEYP)) return $('gerr').textContent = 'Senha incorreta.';
+  $('gate').hidden = true; $('app').hidden = false; startApp();
+};
+$('gpass').onkeydown = $('gpass2').onkeydown = e => { if (e.key === 'Enter') $('gok').click(); };
+$('btnLock').onclick = () => { try { if (peer) peer.destroy(); } catch (e) {} peer = null; conns.clear(); started = false; showGate(); };
+
+// ---------- conexão com os jogadores (PeerJS) ----------
+let peer = null, started = false;
+const conns = new Map(); // did -> conexão aberta
+const setStatus = (cls, txt) => { $('status').className = 'pill ' + cls; $('statusTxt').textContent = txt; };
+const cleanStr = (v, n) => String(v == null ? '' : v).replace(/[<>]/g, '').slice(0, n);
+const cleanNum = v => (typeof v === 'number' && isFinite(v) ? Math.max(0, Math.min(1e9, Math.floor(v))) : 0);
+const send = (c, m) => { try { if (c && c.open) c.send(m); } catch (e) {} };
+const sendAll = m => conns.forEach(c => send(c, m));
+
+function startApp() {
+  if (started) { render(); return; }
+  started = true; fillCfg(); render();
+  if (typeof Peer === 'undefined') return setStatus('err', 'Biblioteca online não carregou');
+  setStatus('', 'Conectando…');
+  const p = peer = new Peer(PANEL_ID, PEER_OPTS);
+  p.on('open', () => setStatus('on', 'Painel online — jogadores podem conectar'));
+  p.on('error', e => {
+    if (e && e.type === 'unavailable-id') setStatus('err', 'Já existe outro painel aberto (feche-o)');
+    else if (e && e.type === 'network') setStatus('err', 'Sem conexão com o servidor de sinal');
+    else setStatus('err', 'Erro: ' + cleanStr(e && e.type, 30));
+  });
+  p.on('disconnected', () => { setStatus('err', 'Desconectado — tentando de novo'); try { p.reconnect(); } catch (e) {} });
+  p.on('connection', c => {
+    let did = null;
+    c.on('data', m => {
+      if (!m || m.t !== 'hello') return;
+      const d = String(m.did || '');
+      if (!/^[a-z0-9]{20}$/.test(d)) return;
+      did = d; conns.set(did, c);
+      const now = Date.now(), old = S.players[did] || {};
+      S.players[did] = {
+        did, pid: cleanStr(m.pid, 24), name: cleanStr(m.name, 16) || 'Jogador', trophies: cleanNum(m.trophies), arena: cleanNum(m.arena),
+        arenaName: cleanStr(m.arenaName, 40), level: cleanNum(m.level), plays: cleanNum(m.plays), wins: cleanNum(m.wins),
+        first: old.first || now, last: now
+      };
+      save();
+      send(c, { t: 'welcome', cfg: S.cfg, blocked: S.blocked, ban: !!S.banned[did], msg: S.msgs[did] || null, ann: S.ann });
+      if (S.del[did]) { send(c, { t: 'del' }); delete S.del[did]; save(); }
+      render();
+    });
+    const gone = () => { if (did && conns.get(did) === c) conns.delete(did); render(); };
+    c.on('close', gone); c.on('error', gone);
+  });
+}
+
+// ---------- ações ----------
+function banPlayer(did) { S.banned[did] = true; save(); send(conns.get(did), { t: 'ban' }); render(); }
+function unbanPlayer(did) { delete S.banned[did]; save(); send(conns.get(did), { t: 'unban' }); render(); }
+function deletePlayer(did) {
+  if (conns.get(did) && conns.get(did).open) send(conns.get(did), { t: 'del' }); else S.del[did] = true;
+  save(); render();
+}
+function messagePlayer(did, text) {
+  text = cleanStr(text, 300).trim(); if (!text) return false;
+  const msg = { id: String(Date.now()), text };
+  S.msgs[did] = msg; save(); send(conns.get(did), { t: 'msg', msg }); return true;
+}
+
+// ---------- tela: jogadores ----------
+const pending = {}; // did -> 'del' | 'msg' (estado dos botões em cada cartão)
+const ago = t => { const s = Math.max(0, (Date.now() - t) / 1000 | 0); return s < 60 ? 'agora há pouco' : s < 3600 ? Math.floor(s / 60) + ' min atrás' : s < 86400 ? Math.floor(s / 3600) + ' h atrás' : Math.floor(s / 86400) + ' d atrás'; };
+function btn(txt, cls, fn) { const b = document.createElement('button'); b.textContent = txt; if (cls) b.className = cls; b.onclick = fn; return b; }
+function render() {
+  if ($('app').hidden) return;
+  const all = Object.values(S.players).sort((a, b) => (conns.has(b.did) - conns.has(a.did)) || b.last - a.last);
+  $('sOn').textContent = conns.size; $('sAll').textContent = all.length; $('sBan').textContent = Object.keys(S.banned).length;
+  const q = $('search').value.trim().toLowerCase(), l = $('plist'); l.innerHTML = '';
+  const list = all.filter(p => !q || p.name.toLowerCase().includes(q));
+  if (!list.length) { const e = document.createElement('div'); e.className = 'empty'; e.textContent = all.length ? 'Nenhum jogador com esse nome.' : 'Nenhum jogador ainda. Abra o jogo em outro aparelho para ele aparecer aqui.'; l.appendChild(e); return; }
+  list.forEach(p => {
+    const on = conns.has(p.did), ban = !!S.banned[p.did];
+    const c = document.createElement('div'); c.className = 'pl' + (on ? '' : ' off') + (ban ? ' banned' : '');
+    const h = document.createElement('div'); h.className = 'h';
+    const n = document.createElement('div'); n.className = 'n'; n.textContent = (on ? '🟢 ' : '⚪ ') + p.name + (ban ? ' · BANIDO' : '');
+    const t = document.createElement('div'); t.className = 'm'; t.textContent = '🏆 ' + p.trophies + ' · Nv ' + p.level;
+    h.append(n, t);
+    const m = document.createElement('div'); m.className = 'm';
+    m.textContent = p.arenaName + ' · ' + p.plays + ' partidas · ' + p.wins + ' vitórias · ' + (on ? 'online' : 'visto ' + ago(p.last)) + ' · aparelho ' + p.did.slice(0, 6);
+    c.append(h, m);
+    const a = document.createElement('div'); a.className = 'acts';
+    if (pending[p.did] === 'msg') {
+      const inp = document.createElement('input'); inp.maxLength = 300; inp.placeholder = 'Mensagem para ' + p.name;
+      a.append(inp, btn('Enviar', 'gold', () => { if (messagePlayer(p.did, inp.value)) { pending[p.did] = null; render(); } }), btn('Cancelar', 'ghost', () => { pending[p.did] = null; render(); }));
+    } else if (pending[p.did] === 'del') {
+      const w = document.createElement('span'); w.className = 'm'; w.textContent = 'Apagar a conta deste jogador?' + (on ? '' : ' (será apagada quando ele abrir o jogo)');
+      a.append(w, btn('Sim, excluir', 'bad', () => { pending[p.did] = null; deletePlayer(p.did); }), btn('Não', 'ghost', () => { pending[p.did] = null; render(); }));
+    } else {
+      a.append(btn('✉️ Mensagem', '', () => { pending[p.did] = 'msg'; render(); }));
+      a.append(ban ? btn('Desbanir', '', () => unbanPlayer(p.did)) : btn('🚫 Banir', 'bad', () => banPlayer(p.did)));
+      a.append(S.del[p.did] ? btn('Exclusão agendada', 'ghost', () => { delete S.del[p.did]; save(); render(); }) : btn('🗑️ Excluir conta', 'ghost', () => { pending[p.did] = 'del'; render(); }));
+    }
+    c.appendChild(a); l.appendChild(c);
+  });
+}
+$('search').oninput = render;
+setInterval(() => { if (!$('app').hidden) render(); }, 30000);
+
+// ---------- tela: ajustes ----------
+const CK = ['towerHp', 'dmg', 'energy', 'time'];
+function fillCfg() { CK.forEach(k => { $('c-' + k).value = S.cfg[k]; $('v-' + k).textContent = k === 'time' ? S.cfg[k] + 's' : S.cfg[k] + 'x'; }); }
+CK.forEach(k => $('c-' + k).oninput = e => { $('v-' + k).textContent = k === 'time' ? e.target.value + 's' : e.target.value + 'x'; });
+$('cfgSend').onclick = () => {
+  CK.forEach(k => S.cfg[k] = Number($('c-' + k).value)); save(); sendAll({ t: 'cfg', cfg: S.cfg });
+  $('cfgSend').textContent = 'Enviado ✓'; setTimeout(() => $('cfgSend').textContent = 'Enviar a todos', 1500);
+};
+$('cfgReset').onclick = () => { S.cfg = { ...DEF }; save(); fillCfg(); sendAll({ t: 'cfg', cfg: S.cfg }); };
+
+// ---------- tela: avisos ----------
+function annUi() { $('annCur').textContent = S.ann ? 'Aviso salvo: “' + S.ann.text + '”' : 'Nenhum aviso salvo.'; }
+$('annSend').onclick = () => {
+  const text = cleanStr($('annTxt').value, 300).trim(); if (!text) return;
+  S.ann = { id: String(Date.now()), text }; save(); sendAll({ t: 'ann', ann: S.ann }); $('annTxt').value = ''; annUi();
+};
+$('annClear').onclick = () => { S.ann = null; save(); annUi(); };
+
+// ---------- tela: nomes bloqueados ----------
+function nmUi() {
+  const l = $('nmList'); l.innerHTML = '';
+  if (!S.blocked.length) { const e = document.createElement('span'); e.className = 'mut'; e.textContent = 'Nenhum nome bloqueado.'; l.appendChild(e); }
+  S.blocked.forEach(n => {
+    const c = document.createElement('span'); c.className = 'chip'; const t = document.createElement('span'); t.textContent = n;
+    c.append(t, btn('✕', '', () => { S.blocked = S.blocked.filter(x => x !== n); save(); sendAll({ t: 'blocked', blocked: S.blocked }); nmUi(); }));
+    l.appendChild(c);
+  });
+}
+$('nmAdd').onclick = () => {
+  const n = cleanStr($('nmIn').value, 16).trim().toLowerCase(); if (!n || S.blocked.includes(n) || S.blocked.length >= 500) return;
+  S.blocked.push(n); save(); sendAll({ t: 'blocked', blocked: S.blocked }); $('nmIn').value = ''; nmUi();
+};
+$('nmIn').onkeydown = e => { if (e.key === 'Enter') $('nmAdd').click(); };
+
+// ---------- abas ----------
+$('tabs').onclick = e => {
+  const t = e.target.dataset && e.target.dataset.t; if (!t) return;
+  document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.t === t));
+  ['pl', 'cfg', 'ann', 'nm'].forEach(k => $('t-' + k).hidden = k !== t);
+};
+
+annUi(); nmUi(); showGate();
+</script>
+</body>
+</html>
