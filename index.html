@@ -4,11 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#16337a">
-<link rel="manifest" href="/manifest.json?v=3">
-<link rel="icon" href="/icon-192.png?v=3" type="image/png">
-<link rel="shortcut icon" href="/favicon.ico?v=3">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/icon-192.png" type="image/png">
 <meta property="og:image" content="/logo.jpg">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=3">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <title>SNAIL ROYALE 3D</title>
@@ -79,27 +78,6 @@ button.play{width:100%;max-width:440px;font-size:24px;min-height:70px}
 .hint{color:#cfe3ff;font-size:13px}
 #toast{position:fixed;left:50%;bottom:120px;transform:translateX(-50%);background:#000c;padding:10px 16px;border-radius:20px;z-index:9;opacity:0;transition:.25s;pointer-events:none}
 #toast.show{opacity:1}
-.passbtn{grid-column:1/-1;background:linear-gradient(#7a3cff,#4a1fb8)!important;outline:2px solid #ffd54a;color:#ffe9a0}
-.passbtn small{display:block;font-weight:600;font-size:11.5px;color:#fff}
-.ptop{width:100%;max-width:480px;background:#0006;border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:8px}
-.ptop .row2{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.pbar{height:18px;border-radius:10px;background:#0009;overflow:hidden;border:2px solid #ffd54a;position:relative}
-.pbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#9b5cff,#e0a0ff)}
-.pbar b{position:absolute;inset:0;text-align:center;font-size:11px;line-height:14px}
-.ptrack{width:100%;max-width:480px;margin-top:10px;display:flex;flex-direction:column;gap:6px;padding-bottom:30px}
-.phead,.prow{display:grid;grid-template-columns:44px 1fr 1fr;gap:6px;align-items:stretch}
-.phead{position:sticky;top:-12px;z-index:3;background:#16337a;padding:6px 0;font-weight:800;font-size:12px;text-align:center}
-.pn{display:flex;align-items:center;justify-content:center;border-radius:10px;background:#243f8f;font-weight:800;font-size:15px}
-.prow.now .pn{background:#ffd54a;color:#4a2c00}
-.prow.reach .pn{background:#3b64c9}
-.pc{border-radius:10px;padding:6px 4px;text-align:center;font-size:12.5px;background:#ffffff18;min-height:52px;display:flex;flex-direction:column;justify-content:center;gap:2px;border:2px solid transparent}
-.pc.prem{background:#5a2ec866;border-color:#b58cff55}
-.pc.ok{border-color:#7dff9a;background:#2e7d3260;animation:pulse 1.2s infinite}
-.pc.done{opacity:.5}
-.pc.lock{opacity:.6}
-.pc.big{border-color:#ffd54a}
-.pc small{font-size:10.5px;color:#cfe3ff}
-@keyframes pulse{50%{transform:scale(1.03)}}
 .logoimg{display:block;width:min(70vw,300px);height:auto;margin:0 auto;border-radius:24px;box-shadow:0 8px 24px #0008}.logoimg.small{width:min(48vw,170px);border-radius:18px}.logoimg.menu{width:min(52vw,210px);animation:crawl 3s infinite ease-in-out}
 </style>
 </head>
@@ -160,7 +138,6 @@ button.play{width:100%;max-width:440px;font-size:24px;min-height:70px}
     <button id="btnShop">🛒 LOJA</button>
     <button id="btnQuests">📜 MISSÕES</button>
     <button id="btnSettings">⚙️ CONFIGURAÇÕES</button>
-    <button id="btnPass" class="passbtn">🎟️ PASSE ROYALE<small id="passSub">Nível 1 / 90</small></button>
   </div>
 </section>
 
@@ -178,22 +155,6 @@ button.play{width:100%;max-width:440px;font-size:24px;min-height:70px}
   <h3>Coleção</h3>
   <div id="collGrid" class="cardgrid"></div>
   <div id="cardDetail" class="panel" hidden></div>
-</section>
-
-<!-- PASSE ROYALE -->
-<section id="pass" class="screen">
-  <header class="top"><button class="back" data-back>‹</button><h2>🎟️ Passe Royale</h2></header>
-  <div class="ptop">
-    <div class="row2"><b style="font-size:20px">Nível <span id="passLvl">1</span> <small style="font-weight:600;opacity:.8">/ 90</small></b><span id="passTag" class="hint"></span></div>
-    <div class="pbar"><i id="passFill"></i><b id="passTxt"></b></div>
-    <div class="row2">
-      <button id="btnPassPrem" class="big" style="flex:1;font-size:14px;min-height:46px">👑 Liberar trilha Real</button>
-      <button id="btnPassSkip" style="flex:1;font-size:14px;min-height:46px">⏩ Pular nível (💎 10)</button>
-    </div>
-    <button id="btnPassAll" style="min-height:44px">🎁 Resgatar tudo disponível</button>
-    <p class="note">Ganhe pontos do passe jogando: vitória +60, empate +30, derrota +20. Cada nível = 100 pontos. A trilha Real é liberada com gemas do jogo (sem dinheiro real).</p>
-  </div>
-  <div class="ptrack" id="passTrack"></div>
 </section>
 
 <!-- AMIGOS -->
@@ -351,9 +312,6 @@ const SHOP = [
   { id: 'coins1',  n: 'Pacote de moedas',  ico: '🪙', cost: 0, gems: 10, give: { coins: 500 } },
   { id: 'shell1',  n: 'Concha Dourada (cosmético)', ico: '🐚', cost: 800, kind: 'cosm', val: 0xffd54f },
   { id: 'shell2',  n: 'Concha Arco-íris (cosmético)', ico: '🌈', cost: 1500, kind: 'cosm', val: 'rainbow' },
-  { id: 'pass_safira',    n: 'Concha Safira (Passe Royale)',    ico: '💠', kind: 'cosm', val: 0x2f6bff, pass: true },
-  { id: 'pass_esmeralda', n: 'Concha Esmeralda (Passe Royale)', ico: '🟢', kind: 'cosm', val: 0x00c853, pass: true },
-  { id: 'pass_real',      n: 'Concha Coroada Real (Passe Royale)', ico: '👑', kind: 'cosm', val: 0xb040ff, pass: true },
   { id: 'upg',     n: 'Baú de melhoria (+1 nível aleatório)', ico: '🎁', cost: 600, kind: 'chest' },
 ];
 
@@ -365,29 +323,6 @@ const QUESTS = [
   { id: 'a_tr1000',n: 'Conquista: 1000 troféus',   goal: 1000,stat: 'trophies', coins: 1000, gems: 15, ach: true },
 ];
 
-// ---- PASSE ROYALE: 90 níveis, trilha grátis + trilha Real ----
-const PASS_MAX = 90, PASS_XP = 100, PASS_PREM_COST = 100, PASS_SKIP_COST = 10;
-const PASS_SKINS = {
-  30: { id: 'pass_safira',   n: 'Concha Safira',   val: 0x2f6bff },
-  60: { id: 'pass_esmeralda',n: 'Concha Esmeralda',val: 0x00c853 },
-  90: { id: 'pass_real',     n: 'Concha Coroada Real', val: 0xb040ff }
-};
-function passReward(lvl, prem) {
-  const r = {};
-  if (!prem) {
-    r.coins = 40 + lvl * 10;
-    if (lvl % 5 === 0) r.gems = 5 + Math.floor(lvl / 10);
-    if (lvl % 10 === 0) r.chest = 1;
-    if (lvl === 90) { r.coins = 5000; r.gems = 50; }
-  } else {
-    r.coins = 100 + lvl * 20;
-    if (lvl % 3 === 0) r.gems = 3 + Math.floor(lvl / 30);
-    if (lvl % 10 === 0) r.chest = 2;
-    if (PASS_SKINS[lvl]) r.skin = PASS_SKINS[lvl];
-    if (lvl === 90) { r.coins = 10000; r.gems = 100; r.chest = 5; }
-  }
-  return r;
-}
 const TIPS = [
   'Dica: toque numa carta e depois na sua metade da arena para invocar.',
   'Dica: a energia recarrega sozinha — não deixe acumular no máximo!',
@@ -629,6 +564,86 @@ const Game = (() => {
     return g;
   }
 
+  // ---------- texturas do chão (geradas por código, sem imagens) ----------
+  // Pinta um canvas em "unidades do mundo": grama com lâminas, manchas de cor, listras de corte,
+  // trilhas de terra nas pontes e florzinhas; areia, pedra, gelo e ouro têm variações próprias.
+  function paintGround(hex, kind, S, ww, wh, field, idx) {
+    const cv = document.createElement('canvas'); cv.width = cv.height = S;
+    const g = cv.getContext('2d'), hsl = {}; new THREE.Color(hex).getHSL(hsl);
+    g.scale(S / ww, S / wh);
+    const css = (l, h = 0, a = 1) => {
+      const c = new THREE.Color().setHSL(hsl.h + h, hsl.s, Math.max(0, Math.min(1, hsl.l + l)));
+      return 'rgba(' + (c.r * 255 | 0) + ',' + (c.g * 255 | 0) + ',' + (c.b * 255 | 0) + ',' + a + ')';
+    };
+    g.fillStyle = css(0); g.fillRect(0, 0, ww, wh);
+    let R; // aleatório com semente: o desenho se repete igual em cada deslocamento (textura sem emenda)
+    const reseed = () => { let s = 1234 + idx * 77; R = () => { s = (s + 0x6D2B79F5) | 0; let t = Math.imul(s ^ (s >>> 15), 1 | s); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; };
+    const area = ww * wh / 468, m = field ? 1 : 0.45;
+    const draw = () => {
+      reseed();
+      // manchas grandes de cor (variação natural)
+      for (let i = 0; i < Math.ceil(46 * area) + 6; i++) {
+        const x = R() * ww, y = R() * wh, r = (1 + R() * 3.2) * m, l = (R() - 0.5) * 0.17, hs = (R() - 0.5) * 0.035;
+        const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, css(l, hs, 0.38)); gr.addColorStop(1, css(l, hs, 0));
+        g.fillStyle = gr; g.fillRect(x - r, y - r, 2 * r, 2 * r);
+      }
+      if (kind === 'grass') {
+        if (field) {
+          for (let z = 0; z < wh; z += 2) { g.fillStyle = ((z / 2) & 1) ? 'rgba(255,255,255,.045)' : 'rgba(0,0,0,.04)'; g.fillRect(0, z, ww, 2); } // listras de corte
+          for (const bx of [BX, -BX]) { // trilha de terra batida nas pontes
+            const lx = bx + W - 1.5, gr = g.createLinearGradient(lx, 0, lx + 3, 0);
+            for (const [o, a] of [[0, 0], [0.25, 0.3], [0.75, 0.3], [1, 0]]) gr.addColorStop(o, 'rgba(122,94,58,' + a + ')');
+            g.fillStyle = gr; g.fillRect(lx, L - PZ, 3, 2 * PZ);
+            g.fillStyle = 'rgba(88,64,36,.35)';
+            for (let i = 0; i < 260; i++) { const d = 0.03 + R() * 0.05; g.fillRect(lx + 0.3 + R() * 2.4, L - PZ + R() * 2 * PZ, d, d); }
+          }
+        }
+        // lâminas de grama: 6 tons, cada tom desenhado num único traçado (rápido)
+        const tones = [[-0.12, 0], [-0.07, 0.005], [-0.03, 0.01], [0.04, 0.005], [0.08, -0.005], [0.13, -0.015]];
+        const n = Math.round(ww * wh * 40 / tones.length);
+        tones.forEach(([l, hs]) => {
+          g.strokeStyle = css(l, hs, 0.55); g.lineWidth = 0.024; g.lineCap = 'round'; g.beginPath();
+          for (let i = 0; i < n; i++) {
+            const x = R() * ww, y = R() * wh, len = 0.12 + R() * 0.17, a = -Math.PI / 2 + (R() - 0.5) * 1.4;
+            g.moveTo(x, y); g.quadraticCurveTo(x + Math.cos(a) * len * 0.5 + (R() - 0.5) * 0.06, y + Math.sin(a) * len * 0.5, x + Math.cos(a) * len + (R() - 0.5) * 0.05, y + Math.sin(a) * len);
+          }
+          g.stroke();
+        });
+        if (field && idx <= 1) for (let i = 0; i < 150; i++) { // florzinhas e trevos
+          g.fillStyle = ['rgba(255,255,255,.9)', 'rgba(255,230,109,.9)', 'rgba(255,170,200,.85)'][i % 3];
+          g.beginPath(); g.arc(R() * ww, R() * wh, 0.035 + R() * 0.02, 0, 6.283); g.fill();
+        }
+      } else {
+        const [n0, nl, wave, lw, l0, l1] = { sand: [14000, 70, 1, 0.03, 0.07, -0.07], rock: [12000, 45, 0, 0.025, 0.09, -0.15], ice: [6000, 100, 0, 0.018, 0.22, -0.06], gold: [9000, 60, 1, 0.03, 0.16, -0.12] }[kind];
+        [l0, l1].forEach(l => { g.fillStyle = css(l, 0, 0.45); for (let i = 0; i < n0 * area / 2; i++) g.fillRect(R() * ww, R() * wh, 0.03, 0.03); });
+        [l0, l1].forEach(l => {
+          g.strokeStyle = css(l, 0, 0.28); g.lineWidth = lw; g.beginPath();
+          for (let i = 0; i < nl * area / 2; i++) {
+            const x = R() * ww, y = R() * wh, len = 1.5 + R() * 3.5; g.moveTo(x, y);
+            if (wave) g.bezierCurveTo(x + len * 0.3, y - 0.25, x + len * 0.6, y + 0.25, x + len, y);
+            else { const a = R() * 6.283; g.lineTo(x + Math.cos(a) * len * 0.5, y + Math.sin(a) * len * 0.5); }
+          }
+          g.stroke();
+        });
+        if (field && idx === 7) { // lajes do castelo
+          g.strokeStyle = css(-0.2, 0, 0.3); g.lineWidth = 0.04; g.beginPath();
+          for (let r = 0, y = 0; y < wh; y += 1.2, r++) { g.moveTo(0, y); g.lineTo(ww, y); for (let x = (r & 1) * 0.9; x < ww; x += 1.8) { g.moveTo(x, y); g.lineTo(x, y + 1.2); } }
+          g.stroke();
+        }
+      }
+    };
+    if (field) draw(); else for (const dx of [-1, 0, 1]) for (const dy of [-1, 0, 1]) { g.save(); g.translate(dx * ww, dy * wh); draw(); g.restore(); }
+    return cv;
+  }
+  const gCache = {};
+  function groundTextures(idx, hex, outHex, kind) {
+    for (const k in gCache) if (+k !== idx) { gCache[k].field.dispose(); gCache[k].out.dispose(); delete gCache[k]; } // libera memória da arena anterior
+    if (gCache[idx]) return gCache[idx];
+    const an = Math.min(8, renderer.capabilities.getMaxAnisotropy ? renderer.capabilities.getMaxAnisotropy() : 1);
+    const mk = (cv, rep) => { const t = new THREE.CanvasTexture(cv); t.anisotropy = an; if (rep) { t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(rep, rep); } return t; };
+    return (gCache[idx] = { field: mk(paintGround(hex, kind, 1024, 2 * W, 2 * L, true, idx)), out: mk(paintGround(outHex, kind, 512, 7.5, 7.5, false, idx), 8) });
+  }
+
   // ---------- arena ----------
   function clearScene() {
     for (let i = scene.children.length - 1; i >= 0; i--) {
@@ -670,11 +685,24 @@ const Game = (() => {
     const base = new THREE.Color(A.g);
 
     // terreno externo (mais escuro) e campo xadrez estilo Clash Royale
-    const out = G(new THREE.Mesh(new THREE.BoxGeometry(60, 0.5, 60), mat(base.clone().multiplyScalar(0.62).getHex())), 0);
+    // WebGL: chão com textura realista. Sem WebGL (renderer 2D de reserva): mantém as cores lisas de antes.
+    const outHex = base.clone().multiplyScalar(0.62).getHex();
+    let outMat = mat(outHex), tex = null;
+    if (renderer.isWebGLRenderer) {
+      try {
+        const T = groundTextures(idx, A.g, outHex, ['grass', 'grass', 'sand', 'grass', 'grass', 'sand', 'rock', 'rock', 'ice', 'gold'][idx]);
+        outMat = new THREE.MeshLambertMaterial({ map: T.out }); tex = T.field;
+      } catch (e) { tex = null; }
+    }
+    const out = G(new THREE.Mesh(new THREE.BoxGeometry(60, 0.5, 60), outMat), 0);
     out.position.y = -0.25;
+    if (tex) {
+      const fl = G(new THREE.Mesh(new THREE.PlaneGeometry(2 * W, 2 * L), new THREE.MeshLambertMaterial({ map: tex })), 1);
+      fl.rotation.x = -Math.PI / 2; fl.position.y = 0.015;
+    }
     const mA = mat(base.clone().offsetHSL(0, 0.02, 0.04).getHex()), mB = mat(base.clone().offsetHSL(0, 0, -0.035).getHex());
     const tg = new THREE.PlaneGeometry(2, 2);
-    for (let ix = 0; ix < 9; ix++) for (let iz = 0; iz < Math.round((L - 1) / 2); iz++) for (const sg of [-1, 1]) {
+    for (let ix = 0; !tex && ix < 9; ix++) for (let iz = 0; iz < Math.round((L - 1) / 2); iz++) for (const sg of [-1, 1]) {
       const t = G(new THREE.Mesh(tg, ((ix + iz) & 1) ? mA : mB), 1);
       t.rotation.x = -Math.PI / 2; t.position.set(-W + 1 + ix * 2, 0.015, sg * (2 + iz * 2));
     }
@@ -1352,7 +1380,6 @@ const Game = (() => {
     $('pName').textContent = st.name; $('pLvl').textContent = level(); $('pCode').textContent = st.code;
     $('pTrophies').textContent = st.trophies; $('pCoins').textContent = st.coins; $('pGems').textContent = st.gems;
     const ai = Math.min(selArena, arenaIdx()); selArena = ai;
-    $('passSub').textContent = 'Nível ' + passLevel() + ' / ' + PASS_MAX + (Object.keys(ensurePass().free).length < passLevel() ? ' · 🎁 recompensas!' : '');
     $('menuArena').textContent = ARENAS[ai].ico + ' Arena ' + (ai + 1) + ' — ' + ARENAS[ai].n;
   }
 
@@ -1412,7 +1439,6 @@ const Game = (() => {
   function renderShop() {
     const l = $('shopList'); l.innerHTML = '';
     SHOP.forEach(it => {
-      if (it.pass && !st.owned.includes(it.id)) return; // itens do passe só aparecem depois de ganhos
       const d = document.createElement('div'); d.className = 'item';
       const owned = it.kind === 'cosm' && st.owned.includes(it.id), eq = it.kind === 'cosm' && st.skin === it.val;
       const price = it.gems ? '💎 ' + it.gems : '🪙 ' + it.cost;
@@ -1479,107 +1505,6 @@ const Game = (() => {
       b.onclick = () => { if (q.ach) st.claimed[q.id] = true; else st.daily.claimed[q.id] = true; st.coins += q.coins; st.gems += q.gems; save(); refreshMenu(); renderQuests(); };
       d.appendChild(b); l.appendChild(d);
     });
-  }
-
-  // ---------- passe royale ----------
-  function ensurePass() {
-    if (!st.pass || typeof st.pass !== 'object') st.pass = { xp: 0, prem: false, free: {}, premC: {} };
-    return st.pass;
-  }
-  const passLevel = () => Math.min(PASS_MAX, Math.floor(ensurePass().xp / PASS_XP));
-  function addPassXp(n) {
-    const p = ensurePass(), before = passLevel();
-    p.xp = Math.min(PASS_MAX * PASS_XP, p.xp + n);
-    return passLevel() - before;
-  }
-  function rewardText(r) {
-    const a = [];
-    if (r.coins) a.push('🪙 ' + r.coins);
-    if (r.gems) a.push('💎 ' + r.gems);
-    if (r.chest) a.push('🎁 x' + r.chest);
-    if (r.skin) a.push('🐚 ' + r.skin.n);
-    return a;
-  }
-  function giveReward(r) {
-    if (r.coins) st.coins += r.coins;
-    if (r.gems) st.gems += r.gems;
-    for (let i = 0; i < (r.chest || 0); i++) {
-      const pool = CARDS.filter(c => unlocked(c) && (st.levels[c.id] || 1) < 10);
-      if (pool.length) { const c = pool[Math.floor(Math.random() * pool.length)]; st.levels[c.id] = (st.levels[c.id] || 1) + 1; }
-      else st.coins += 300;
-    }
-    if (r.skin) { if (!st.owned.includes(r.skin.id)) st.owned.push(r.skin.id); st.skin = r.skin.val; }
-  }
-  function canClaim(lvl, prem) {
-    const p = ensurePass();
-    if (lvl > passLevel()) return false;
-    if (prem) return p.prem && !p.premC[lvl];
-    return !p.free[lvl];
-  }
-  function claimPass(lvl, prem, quiet) {
-    if (!canClaim(lvl, prem)) return false;
-    const p = ensurePass();
-    giveReward(passReward(lvl, prem));
-    (prem ? p.premC : p.free)[lvl] = true;
-    if (!quiet) { save(); refreshMenu(); renderPass(); toast('Recompensa do nível ' + lvl + ' resgatada!'); }
-    return true;
-  }
-  function claimAll() {
-    let n = 0;
-    for (let l = 1; l <= PASS_MAX; l++) { if (claimPass(l, false, true)) n++; if (claimPass(l, true, true)) n++; }
-    save(); refreshMenu(); renderPass();
-    toast(n ? n + ' recompensa(s) resgatada(s)!' : 'Nada para resgatar agora');
-  }
-  async function buyPrem() {
-    const p = ensurePass();
-    if (p.prem) return toast('Trilha Real já liberada');
-    if (st.gems < PASS_PREM_COST) return toast('Gemas insuficientes (💎 ' + PASS_PREM_COST + ')');
-    if (!(await askConfirm('Liberar a trilha Real do Passe por 💎 ' + PASS_PREM_COST + '?', 'Liberar'))) return;
-    st.gems -= PASS_PREM_COST; p.prem = true; save(); refreshMenu(); renderPass(); toast('👑 Trilha Real liberada!');
-  }
-  async function skipLevel() {
-    const p = ensurePass();
-    if (passLevel() >= PASS_MAX) return toast('Nível máximo!');
-    if (st.gems < PASS_SKIP_COST) return toast('Gemas insuficientes (💎 ' + PASS_SKIP_COST + ')');
-    if (!(await askConfirm('Pular 1 nível do Passe por 💎 ' + PASS_SKIP_COST + '?', 'Pular'))) return;
-    st.gems -= PASS_SKIP_COST; p.xp = (passLevel() + 1) * PASS_XP; save(); refreshMenu(); renderPass();
-  }
-  function cellHtml(lvl, prem) {
-    const r = passReward(lvl, prem), p = ensurePass();
-    const done = prem ? p.premC[lvl] : p.free[lvl];
-    const reach = lvl <= passLevel();
-    let cls = 'pc' + (prem ? ' prem' : '') + (r.skin || lvl % 10 === 0 ? ' big' : '');
-    let tag = '';
-    if (done) { cls += ' done'; tag = '✅'; }
-    else if (prem && !p.prem) { cls += ' lock'; tag = '🔒'; }
-    else if (!reach) { cls += ' lock'; tag = '🔒'; }
-    else cls += ' ok';
-    return { cls, html: rewardText(r).map(t => `<span>${t}</span>`).join('') + (tag ? `<small>${tag}</small>` : '<small>Toque p/ resgatar</small>') };
-  }
-  function renderPass() {
-    const p = ensurePass(), lv = passLevel(), maxed = lv >= PASS_MAX;
-    $('passLvl').textContent = lv;
-    const into = maxed ? PASS_XP : p.xp % PASS_XP;
-    $('passFill').style.width = (into / PASS_XP * 100) + '%';
-    $('passTxt').textContent = maxed ? 'NÍVEL MÁXIMO' : into + ' / ' + PASS_XP + ' pontos';
-    $('passTag').textContent = p.prem ? '👑 Trilha Real ativa' : 'Trilha grátis';
-    $('btnPassPrem').textContent = p.prem ? '👑 Trilha Real ativa' : '👑 Liberar trilha Real (💎 ' + PASS_PREM_COST + ')';
-    $('btnPassPrem').disabled = p.prem; $('btnPassSkip').disabled = maxed;
-    const t = $('passTrack'); t.innerHTML = '<div class="phead"><span>Nv</span><span>🆓 Grátis</span><span>👑 Real</span></div>';
-    for (let l = 1; l <= PASS_MAX; l++) {
-      const row = document.createElement('div'); row.className = 'prow' + (l === lv ? ' now' : l < lv ? ' reach' : ''); row.id = 'pr' + l;
-      const n = document.createElement('div'); n.className = 'pn'; n.textContent = l; row.appendChild(n);
-      for (const prem of [false, true]) {
-        const c = cellHtml(l, prem), d = document.createElement('div'); d.className = c.cls; d.innerHTML = c.html;
-        d.onclick = () => { if (!claimPass(l, prem)) { if (prem && !p.prem) toast('Libere a trilha Real primeiro'); else if (l > passLevel()) toast('Alcance o nível ' + l + ' para resgatar'); } };
-        row.appendChild(d);
-      }
-      t.appendChild(row);
-    }
-  }
-  function openPass() {
-    ensurePass(); renderPass(); show('pass');
-    setTimeout(() => { const el = $('pr' + Math.max(1, passLevel())); if (el) el.scrollIntoView({ block: 'center' }); }, 60);
   }
 
   // ---------- perfil / config ----------
@@ -1664,14 +1589,13 @@ const Game = (() => {
     if (priv) { tr = 0; coins = 0; xp = 0; }
     const before = st.trophies; st.trophies = Math.max(0, st.trophies + tr); tr = st.trophies - before;
     st.coins += coins; st.xp += xp;
-    const pxp = priv ? 0 : (win ? 60 : draw ? 30 : 20), pUp = addPassXp(pxp);
     if (!priv) {
       st.stats.plays++; st.daily.plays++; st.stats.towers += res.towers; st.daily.towers += res.towers;
       if (win) { st.stats.wins++; st.daily.wins++; }
     }
     save(); refreshMenu();
     $('resTitle').textContent = win ? '🏆 VITÓRIA!' : draw ? '🤝 EMPATE' : (res.forfeit ? '🏳️ DESISTÊNCIA' : '💔 DERROTA');
-    $('resBody').innerHTML = `Coroas: ${res.pCrowns} x ${res.eCrowns}<br>🏆 ${tr >= 0 ? '+' : ''}${tr} troféus<br>🪙 +${coins} moedas<br>⭐ +${xp} XP<br>🎟️ +${pxp} pontos do Passe${pUp ? ' — <b>subiu ' + pUp + ' nível(is)!</b> (Passe nv ' + passLevel() + ')' : ''}<br><small>${net ? 'Partida online com ' + esc(net.opp.name) + (priv ? ' (privada: sem recompensas)' : '') + ' — sem validação de servidor.' : 'Partida local contra bot — nada é validado por servidor.'}</small>`;
+    $('resBody').innerHTML = `Coroas: ${res.pCrowns} x ${res.eCrowns}<br>🏆 ${tr >= 0 ? '+' : ''}${tr} troféus<br>🪙 +${coins} moedas<br>⭐ +${xp} XP<br><small>${net ? 'Partida online com ' + esc(net.opp.name) + (priv ? ' (privada: sem recompensas)' : '') + ' — sem validação de servidor.' : 'Partida local contra bot — nada é validado por servidor.'}</small>`;
     show('result', false);
   }
 
@@ -1968,6 +1892,7 @@ const Game = (() => {
     $('bannedMsg').textContent = 'O dono do jogo baniu este aparelho. Você não pode mais jogar.';
     $('banned').style.display = 'flex';
   }
+  function liftBan() { isBanned = false; LS.removeItem('sr3d_banned'); $('banned').style.display = 'none'; if (st) enterMenu(); else show('auth', false); }
   function wipeDeleted() {
     try { Game.stop(); } catch (e) {}
     inNet = false; try { roomClose(); } catch (e) {}
@@ -1983,11 +1908,11 @@ const Game = (() => {
   }
   function onPanelMsg(m) {
     if (!m) return;
-    if (m.t === 'welcome') { applyCfg(m.cfg); if (Array.isArray(m.blocked)) LS.setItem('sr3d_blocked', JSON.stringify(m.blocked.slice(0, 500))); if (m.ban) showBanned(); }
+    if (m.t === 'welcome') { applyCfg(m.cfg); if (Array.isArray(m.blocked)) LS.setItem('sr3d_blocked', JSON.stringify(m.blocked.slice(0, 500))); if (m.ban) showBanned(); else if (isBanned) liftBan(); }
     else if (m.t === 'cfg') applyCfg(m.cfg);
     else if (m.t === 'blocked' && Array.isArray(m.blocked)) LS.setItem('sr3d_blocked', JSON.stringify(m.blocked.slice(0, 500)));
     else if (m.t === 'ban') showBanned();
-    else if (m.t === 'unban') { isBanned = false; LS.removeItem('sr3d_banned'); $('banned').style.display = 'none'; }
+    else if (m.t === 'unban') liftBan();
     else if (m.t === 'del') wipeDeleted();
     if ((m.t === 'welcome' || m.t === 'msg') && m.msg && m.msg.id && m.msg.text && LS.getItem('sr3d_pm') !== String(m.msg.id)) { LS.setItem('sr3d_pm', String(m.msg.id)); showNotice(m.msg.text); }
     if ((m.t === 'welcome' || m.t === 'ann') && m.ann && m.ann.id && m.ann.text && LS.getItem('sr3d_ann') !== String(m.ann.id)) { LS.setItem('sr3d_ann', String(m.ann.id)); showNotice(m.ann.text); }
@@ -2010,7 +1935,7 @@ const Game = (() => {
     } catch (e) { linking = false; }
   }
   const syncPlayer = () => { if (!st || isBanned) return; if (link && link.open) hello(); else ensureLink(); };
-  async function cloudCheck() { if (isBanned) { showBanned(); return 'banned'; } ensureLink(); return 'ok'; }
+  async function cloudCheck() { if (isBanned) { showBanned(); ensureLink(); return 'banned'; } ensureLink(); return 'ok'; }
   function startCloudLoop() {
     if (cloudTimer) return;
     cloudTimer = setInterval(() => { if (st && !isBanned) syncPlayer(); }, 60000);
@@ -2064,8 +1989,6 @@ const Game = (() => {
     $('roomCode').oninput = e => { e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); };
     $('btnCards').onclick = () => { selCard = null; renderCards(); show('cards'); };
     $('btnShop').onclick = () => { renderShop(); show('shop'); };
-    $('btnPass').onclick = openPass;
-    $('btnPassPrem').onclick = buyPrem; $('btnPassSkip').onclick = skipLevel; $('btnPassAll').onclick = claimAll;
     $('btnQuests').onclick = () => { renderQuests(); show('quests'); };
     $('btnProfile').onclick = () => { renderProfile(); show('profile'); };
     $('btnSettings').onclick = () => { $('optSound').checked = st.opts.sound; $('optDiff').value = st.opts.diff; show('settings'); };
